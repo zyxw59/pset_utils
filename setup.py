@@ -7,6 +7,7 @@ setup(name='pset_utils',
       author='Emily Crandall Fleischman',
       author_email='emilycf@mit.edu',
       license='MIT',
+      install_requires=['cycler'],
       packages=['pset_utils'],
       zip_safe=False)
 
