@@ -56,11 +56,11 @@ class _Figure(contextlib.AbstractContextManager):
         if self._interactive:
             self._plt.show()
         else:
-            self.fig.savefig(self.name)
+            self.fig.savefig(self.name + self._suffix)
             self._plt.close(self.fig)
 
 
-def figure_setup(pyplot, interactive=True):
+def figure_setup(pyplot, interactive=True, suffix=None):
     """Returns a context manager for displaying or saving figures.
 
     Args:
@@ -74,5 +74,6 @@ def figure_setup(pyplot, interactive=True):
     """
     _Figure._plt = pyplot
     _Figure._interactive = interactive
+    _Figure._suffix = '.{}'.format(suffix) if suffix is not None else ''
     return _Figure
 
