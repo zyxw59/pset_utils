@@ -12,24 +12,28 @@ with Figure(name, figsize=figsize) as fig:
 to easily display or save plots.
 
 To use monochromatic lines:
-    pyplot.rcParams.update{'axes.prop_cycle': monochrome}
+    pyplot.rcParams.update(monochrome_params)
 
 To use the same font as the host document in embeded pgf:
     pyplot.rcParams.update(pgf_params)
 """
 import contextlib
 from cycler import cycler
+import csv
+import numpy as np
 
 # print monochromatic lines
 monochrome = (cycler('marker', ['', '.']) *
               cycler('color', ['k', '0.5']) *
               cycler('linestyle', ['-', '--', ':', '-.']))
+monochrome_params = {'axes.prop_cycle': monochrome}
 
 # set up matplotlib for pgf export
 pgf_params = {
         'font.family': 'serif',
         'font.serif': [],
         'font.sans-serif': [],
+        'text.usetex': True
 }
 
 # default figure size
@@ -68,6 +72,8 @@ def figure_setup(pyplot, interactive=True, suffix=None):
         interactive (optional): If true (default), this is being run from an
             interactive shell, and the context manager will display the figure
             upon exiting.  Otherwise, the figure will be saved upon exiting.
+        suffix (optional): If provided, all filenames will be suffixed with a
+            period followed by `suffix`.
 
     Returns:
         A context manager for displaying or saving figures.
@@ -76,4 +82,25 @@ def figure_setup(pyplot, interactive=True, suffix=None):
     _Figure._interactive = interactive
     _Figure._suffix = '.{}'.format(suffix) if suffix is not None else ''
     return _Figure
+
+
+def numpy_from_csv(filename, quoting=csv.QUOTE_NONNUMERIC, **kwargs):
+    """Load a csv file into a numpy structured array.
+
+    Args:
+        filename: The filename to read from
+        quoting (optional): The quoting option for csv.reader. Defaults to
+            csv.QUOTE_NONNUMERIC.
+        **kwargs (optional): Additional keyword arguments to pass to csv.reader
+
+    Returns:
+        A numpy structured array, with field names corresponding to the first
+        row of the csv file. The dtype of each field is determined by the first
+        row of data, with nonnumeric types given the object dtype (this allows
+        the array to hold arbitrarily long strings, for example).
+    """
+    with open(filename) as f:
+        data = list(csv.reader(f, **kwargs))
+    dtypes = [type(x) if isinstance(x, (int, float)) else object for x in data[1]]
+    return np.array([tuple(x) for x in data[1:]], dtype=list(zip(data[0], dtypes)))
 
