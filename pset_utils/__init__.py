@@ -44,11 +44,17 @@ class _Figure(contextlib.AbstractContextManager):
 
     _number = 0
 
-    def __init__(self, name=None, *args, **kwargs):
-        if name is None:
-            name = self._number
+    def __init__(self, *args, **kwargs):
+        if not args:
+            self.name = self._number
             type(self)._number += 1
-        self.name = name
+        elif isinstance(args[0], str):
+            self.name = args.pop(0)
+        else:
+            self.fig = self._plt.figure()
+            with self:
+                self._plt.plot(*args, **kwargs)
+            return
         if 'figsize' not in kwargs:
             kwargs['figsize'] = FIGSIZE
         self.fig = self._plt.figure(*args, **kwargs)

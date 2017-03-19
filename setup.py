@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pset_utils',
-      version='0.2',
+      version='0.3',
       description='Utilities to help with pyplot',
       url='http://github.com/zyxw59/pset_utils',
       author='Emily Crandall Fleischman',
