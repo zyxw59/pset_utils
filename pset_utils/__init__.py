@@ -100,7 +100,7 @@ def numpy_from_csv(filename, quoting=csv.QUOTE_NONNUMERIC, **kwargs):
         the array to hold arbitrarily long strings, for example).
     """
     with open(filename) as f:
-        data = list(csv.reader(f, **kwargs))
+        data = list(csv.reader(f, quoting=quoting, **kwargs))
     dtypes = [type(x) if isinstance(x, (int, float)) else object for x in data[1]]
     return np.array([tuple(x) for x in data[1:]], dtype=list(zip(data[0], dtypes)))
 
