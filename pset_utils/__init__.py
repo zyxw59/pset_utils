@@ -49,7 +49,8 @@ class _Figure(contextlib.AbstractContextManager):
             self.name = self._number
             type(self)._number += 1
         elif isinstance(args[0], str):
-            self.name = args.pop(0)
+            self.name = args[0]
+            args = args[1:]
         else:
             self.fig = self._plt.figure()
             with self:
