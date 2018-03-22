@@ -47,7 +47,7 @@ class _Figure(contextlib.AbstractContextManager):
     def __init__(self, *args, **kwargs):
         if not args:
             self.name = self._number
-            type(self)._number += 1
+            _Figure._number += 1
         elif isinstance(args[0], str):
             self.name = args[0]
             args = args[1:]
@@ -70,6 +70,17 @@ class _Figure(contextlib.AbstractContextManager):
             self.fig.savefig(self.name + self._suffix)
             self._plt.close(self.fig)
 
+    @classmethod
+    def fig_3d(cls, *args, **kwargs):
+        """Returns a `Figure3d` instance"""
+        return _Figure3d(*args, **kwargs)
+
+
+class _Figure3d(_Figure):
+    """A context manager to create and display or save a 3d figure."""
+
+    def __enter__(self):
+        return self.fig.add_subplot(1, 1, 1, projection="3d")
 
 def figure_setup(pyplot, interactive=True, suffix=None):
     """Returns a context manager for displaying or saving figures.
